@@ -7,9 +7,12 @@ visualizing detection data from acoustic telemetry studies.
 
 ## Functions
 
-### Detection filtering:
+### Detection management:
 - **detectFilter**: Identifies potential false detections in acoustic telemetry 
                     data based on the intervals between consecutive detections.
+- **mainVal**: Identifies and returns the most frequent value in a vector.
+               Useful to identify the receiver with the largest number of 
+               detections within a time interval.
 
 ### Activity estimation:
 - **milliSec**: Extracts the millisecond component from POSIXct timestamps.

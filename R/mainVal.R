@@ -4,8 +4,8 @@
 #' It calculates the frequency of each value and selects the one with the
 #' maximum count. If there is a tie (i.e., multiple values have the same
 #' maximum count), one of the tied values is selected randomly. This function
-#' can be useful in various applications, such as selecting the receiver or
-#' station with the largest number of detections within a time interval.
+#' can be useful for selecting the receiver or station with the largest number
+#' of detections within a time interval.
 #'
 #' @param values A vector of values, usually station names or receiver IDs.
 #'
