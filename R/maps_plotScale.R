@@ -1,25 +1,37 @@
-#' Plot scale bar on a map
+#' Add a Scale Bar to a Map
 #'
-#' This function draws a scale bar on a map made with a UTM projection.
+#' This function adds a scale bar to a map plotted in a UTM projection. The
+#' scale bar is drawn with specified units and dimensions.
 #'
-#' @param length A numeric value specifying the length of the scale bar in the
-#'               units defined by `units`. Defaults to 100.
-#' @param units A character string specifying the units for the scale bar.
-#'              Either "m" (meters) or "km" (kilometers). Defaults to "m".
-#' @param col A character string specifying the color of the scale bar and text.
-#'            Defaults to "gray50".
-#' @param side A character string indicating the side where the scale bar will
-#'             be drawn. Either "left" or "right". Defaults to "left".
+#' @param length A numeric value specifying the length of the scale bar. The
+#'    length is in the units defined by the `units` parameter.
+#' @param units A character string specifying the units for the scale bar. It
+#'    can be either "m" (meters) or "km" (kilometers). Defaults to "m".
+#' @param col A character string specifying the color of the scale bar and the
+#'    text. Defaults to `"gray50"`.
+#' @param side A character string indicating which side of the plot the scale
+#'    bar will be drawn on. Either "left" or "right". Defaults to "left".
+#' @param lwd A numeric value specifying the width of the scale bar line.
 #' @param inset A numeric vector of length 2 specifying the inset distances for
-#'              the margins as fractions of the plot region.
-#' @param whisk.len A numeric value specifying the length of the whiskers at
-#'                  the ends of the scale bar.
-#' @param lwd A numeric value specifying the width of the scale line.
+#'    the margins as fractions of the plot region. The first value controls the
+#'    horizontal position, and the second controls the vertical position.
+#' @param whisk.len A numeric value specifying the length of the whiskers at the
+#'    ends of the scale bar.
 #'
-#' @return This function adds a scale bar to the current plot.
+#' @return This function adds a scale bar to the current plot. It does not
+#'    return any value.
+#'
+#' @examples
+#' # Example usage
+#' plot(1:500, 1:500, type = "n", asp = 1)
+#' plotScale(length = 100, units = "m", side = "right")
+#' plotScale(length = 0.5, units = "km", side = "left", inset = c(0.05, 0.05))
+#'
 #' @export
+#'
+#'
 plotScale <- function(length = 100, units = "m", col = "gray50", side = "left",
-                      inset = c(0.015, 0.025), whisk.len = 0.02, lwd = 1.2) {
+                      lwd = 1.2, inset = c(0.015, 0.025), whisk.len = 0.02) {
   usr <- par("usr")
   fig <- par("fig")
 

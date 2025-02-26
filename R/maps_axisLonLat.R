@@ -1,26 +1,34 @@
-#' Plot axes in Latitude and Longitude format
+#' Add Latitude and Longitude Axes to a UTM Map
 #'
-#' This function draws the axes of a UTM map in Latitude and Longitude format.
+#' This function adds axes to a map, displaying coordinates in latitude and
+#' longitude format (degrees and minutes), for a map projected in UTM.
 #'
-#' @param map.crs A character string specifying the Proj4 code of the original
-#'                map projection or an object of class `CRS`.
-#' @param xlim A numeric vector of length 2 specifying the limits of the X-axis
-#'             (optional). Defaults to the current plot limits.
-#' @param ylim A numeric vector of length 2 specifying the limits of the Y-axis
-#'             (optional). Defaults to the current plot limits.
-#' @param by A numeric value specifying the interval (in degrees) for the axis
-#'           labels. Defaults to 0.5 degrees.
+#' @param map.crs A character string specifying the Proj4 code or an object of
+#'    class `CRS` of the plotted  map projection .
+#' @param xlim A numeric vector of length 2 specifying the limits of the X-axis.
+#'    If `NULL` (the default), the function uses the current plot limits.
+#' @param ylim A numeric vector of length 2 specifying the limits of the Y-axis.
+#'    If `NULL` (the default), the function uses the current plot limits.
+#' @param by A numeric value specifying the interval for the axis labels, in
+#'    degrees.
 #' @param side An integer (1, 2, 3, or 4) indicating which side of the plot the
-#'             axis should be drawn on. Defaults to NULL, which draws both X
-#'             and Y axes.
+#'    axis should be drawn on. If `NULL` (the default), the function will draw
+#'    axes on both the X and Y sides of the plot.
 #' @param line A numeric value specifying the line position of the axis labels.
-#'             Defaults to 0.
-#' @param tcl A numeric value specifying the tick length (negative values point
-#'            inward). Defaults to -0.5.
-#' @return This function adds latitude and longitude axis labels to the current plot.
+#'    Default is 0, which places the labels at the default position. Positive
+#'    values move the labels outward, and negative values move them inward.
+#' @param tcl A numeric value specifying the tick length.
+#'
+#' @return This function adds latitude and longitude axis labels to the
+#' current plot. It does not return any value.
+#'
 #' @export
+#'
+#'
 axisLonLat <- function(map.crs, xlim = NULL, ylim = NULL, by = 0.5, side = NULL,
                        line = 0, tcl = -0.5) {
+
+  requireNamespace("sp", quietly = TRUE)
 
   # Map projection
   if (class(map.crs) != "CRS") map.crs <- sp::CRS(map.crs)
@@ -44,7 +52,6 @@ axisLonLat <- function(map.crs, xlim = NULL, ylim = NULL, by = 0.5, side = NULL,
   grid_min[2, ] <- ceiling(grid_min[2, ])
 
   grid_gm <- grid_min + floor(grid_coord) * 60
-
 
   # Sequence of labels
   seq_x <- seq(grid_gm[1, 1], grid_gm[2, 1], by = by)

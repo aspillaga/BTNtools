@@ -2,5 +2,8 @@
 
 export(axisLonLat)
 export(detectFilter)
+export(milliSec)
 export(plotScale)
 export(rescale)
+export(soundSpeed)
+export(unwrapDrift)
