@@ -58,7 +58,10 @@ detectFilter <- function(tag.id, time.stamp, rec.id = NULL, time.int = 24,
                          units = "hours", return.both = FALSE) {
 
   # Load required package
-  requireNamespace("data.table", quietly = TRUE)
+  if (!requireNamespace("data.table", quietly = TRUE)) {
+    stop("Package 'data.table' is required but not installed.", call. = FALSE)
+  }
+  library(data.table)  # Ensure data.table is loaded
 
   # Validate inputs
   if (!inherits(time.stamp, "POSIXt")) {
