@@ -7,3 +7,5 @@ export(plotScale)
 export(rescale)
 export(soundSpeed)
 export(unwrapDrift)
+
+importFrom(data.table, .N, .I, ':=')
