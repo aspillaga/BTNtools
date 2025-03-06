@@ -16,8 +16,6 @@
 #' mainVal(station_ids)
 #'
 #' @export
-#'
-#'
 mainVal <- function(values) {
   tab <- table(values)
   return(sample(names(tab[tab == max(tab, na.rm = TRUE)]), 1))
