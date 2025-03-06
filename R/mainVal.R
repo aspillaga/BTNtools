@@ -20,5 +20,5 @@
 #'
 mainVal <- function(values) {
   tab <- table(values)
-  sample(names(tab[tab == max(tab, na.rm = TRUE)]), 1)
+  return(sample(names(tab[tab == max(tab, na.rm = TRUE)]), 1))
 }

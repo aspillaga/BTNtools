@@ -2,26 +2,30 @@
 % Please edit documentation in R/unwrapDrift.R
 \name{unwrapDrift}
 \alias{unwrapDrift}
-\title{Function to unwrap time drift}
+\title{Unwrap Time Drift in Acoustic Telemetry Data}
 \usage{
 unwrapDrift(ms, time.stamps, granularity = 1)
 }
 \arguments{
-\item{ms}{Vector of millisecond values.}
+\item{ms}{A numeric vector of millisecond values, ranging from 0 to 1.}
 
-\item{time.stamps}{Detection time stamps, POSIXct.}
+\item{time.stamps}{A \code{POSIXct} vector of detection time stamps.}
 
-\item{granularity}{Signal emission granularity.}
+\item{granularity}{A numeric value specifying the signal emission
+granularity. Defaults to \code{1} for Thelma Biotel transmitters. Use \code{0.5} for
+Lotek transmitters.}
 }
 \value{
-A numeric vector of a continuous time drift.
+A numeric vector representing the unwrapped, continuous time drift.
 }
 \description{
-Function to unwrap the drift in milliseconds (ranging between 0 and 1) to
-extract the continuous drift pattern. It takes into account the granularity
-of the signal emission period, that is, the precision of the time-intervals
-at which signals are emitted. Thelma Biotel's transmitters have a granularity
-of 1 (signals are always emitted at entire seconds in their internal clock),
-while Lotek transmitters have a granularity of 0.5 (signals are emitted at
-possible intervals of 0.5 seconds).
+This function reconstructs the continuous time drift pattern from a vector
+of millisecond values that range between 0 and 1. Since the observed drift
+is cyclical (0-1 range), the function unwraps it by correcting for
+discontinuities.The correction accounts for the signal emission granularity
+of the transmitter, which refers to the precision of the signal emission
+intervals. The function estimates the mean slope of the drift using time
+differences between consecutive detections. It only considers pairs of
+detections with small drift changes (less than half the granularity) and
+those occurring within one hour of each other.
 }

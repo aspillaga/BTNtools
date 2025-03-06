@@ -2,10 +2,11 @@
 
 export(axisLonLat)
 export(detectFilter)
+export(mainVal)
 export(milliSec)
 export(plotScale)
 export(rescale)
 export(soundSpeed)
 export(unwrapDrift)
-
-importFrom(data.table, .N, .I, ':=')
+importFrom(data.table,':=')
+importFrom(data.table,.N)

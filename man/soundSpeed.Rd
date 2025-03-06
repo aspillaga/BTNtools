@@ -2,26 +2,38 @@
 % Please edit documentation in R/soundSpeed.R
 \name{soundSpeed}
 \alias{soundSpeed}
-\title{Function to calculate the speed of sound in water applying the Mackenzie
-equation}
+\title{Calculate the Speed of Sound in Water Using the Mackenzie Equation}
 \usage{
 soundSpeed(temp = 21, sal = 38, depth = 20)
 }
 \arguments{
-\item{temp}{Numeric vector or single value of temperature, in celsius degrees.}
+\item{temp}{Numeric vector or single value of temperature (°C).}
 
-\item{sal}{Numeric vector or single value of salinity, in PSU.}
+\item{sal}{Numeric vector or single value of salinity (PSU).}
 
-\item{depth}{Numeric vector or single value of depth.}
+\item{depth}{Numeric vector or single value of depth (m).}
 }
 \value{
-A numeric vector of sound speed in water, in m/s.
+A numeric vector representing the speed of sound in water (m/s).
 }
 \description{
-This function to estimates sound speed by applying a simplified version of
-the Mackenzie equation (1981), given the temperature (temp), salinity (sal) and
-depth.
-Reference: Mackenzie, K.V. (1981). Nine-term equation for the sound speed in
-the oceans. J. Acoust. Soc. Am. 70(3): 807-812.
-https://doi.org/10.1121/1.386920
+This function estimates the speed of sound in water using a simplified version
+of the Mackenzie equation (Mackenzie, 1981). The calculation is based on
+temperature, salinity, and depth.
+}
+\examples{
+
+# Calculate sound speed for given temperature, salinity, and depth
+soundSpeed(temp = 21, sal = 38, depth = 20)
+
+# Vectorized example
+temps <- c(10, 15, 20, 25)
+sound_speeds <- soundSpeed(temp = temps, sal = 35, depth = 50)
+print(sound_speeds)
+
+}
+\references{
+Mackenzie, K.V. (1981). Nine-term equation for the sound speed in the oceans.
+\emph{Journal of the Acoustical Society of America}, 70(3), 807-812.
+\doi{10.1121/1.386920}
 }

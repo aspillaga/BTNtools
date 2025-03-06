@@ -2,7 +2,7 @@
 % Please edit documentation in R/maps_axisLonLat.R
 \name{axisLonLat}
 \alias{axisLonLat}
-\title{Plot axes in Latitude and Longitude format}
+\title{Add Latitude and Longitude Axes to a UTM Map}
 \usage{
 axisLonLat(
   map.crs,
@@ -15,31 +15,33 @@ axisLonLat(
 )
 }
 \arguments{
-\item{map.crs}{A character string specifying the Proj4 code of the original
-map projection or an object of class \code{CRS}.}
+\item{map.crs}{A character string specifying the Proj4 code or an object of
+class \code{CRS} of the plotted  map projection .}
 
-\item{xlim}{A numeric vector of length 2 specifying the limits of the X-axis
-(optional). Defaults to the current plot limits.}
+\item{xlim}{A numeric vector of length 2 specifying the limits of the X-axis.
+If \code{NULL} (the default), the function uses the current plot limits.}
 
-\item{ylim}{A numeric vector of length 2 specifying the limits of the Y-axis
-(optional). Defaults to the current plot limits.}
+\item{ylim}{A numeric vector of length 2 specifying the limits of the Y-axis.
+If \code{NULL} (the default), the function uses the current plot limits.}
 
-\item{by}{A numeric value specifying the interval (in degrees) for the axis
-labels. Defaults to 0.5 degrees.}
+\item{by}{A numeric value specifying the interval for the axis labels, in
+degrees.}
 
 \item{side}{An integer (1, 2, 3, or 4) indicating which side of the plot the
-axis should be drawn on. Defaults to NULL, which draws both X
-and Y axes.}
+axis should be drawn on. If \code{NULL} (the default), the function will draw
+axes on both the X and Y sides of the plot.}
 
 \item{line}{A numeric value specifying the line position of the axis labels.
-Defaults to 0.}
+Default is 0, which places the labels at the default position. Positive
+values move the labels outward, and negative values move them inward.}
 
-\item{tcl}{A numeric value specifying the tick length (negative values point
-inward). Defaults to -0.5.}
+\item{tcl}{A numeric value specifying the tick length.}
 }
 \value{
-This function adds latitude and longitude axis labels to the current plot.
+This function adds latitude and longitude axis labels to the
+current plot. It does not return any value.
 }
 \description{
-This function draws the axes of a UTM map in Latitude and Longitude format.
+This function adds axes to a map, displaying coordinates in latitude and
+longitude format (degrees and minutes), for a map projected in UTM.
 }

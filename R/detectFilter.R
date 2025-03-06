@@ -51,6 +51,8 @@
 #' points(time_stamp[!f2$receiver], tag_id[!f2$receiver], col = 4, cex = 2.4)
 #' points(time_stamp[!f2$array], tag_id[!f2$array], col = 2, cex = 2)
 #'
+#' @importFrom data.table ':=' .N .SD
+#'
 #' @export
 #'
 #'

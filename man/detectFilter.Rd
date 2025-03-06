@@ -2,7 +2,7 @@
 % Please edit documentation in R/detectFilter.R
 \name{detectFilter}
 \alias{detectFilter}
-\title{Identify false or spurious detections in acoustic telemetry data}
+\title{Identify Valid and False or Spurious Detections in Acoustic Telemetry Data}
 \usage{
 detectFilter(
   tag.id,
@@ -10,58 +10,65 @@ detectFilter(
   rec.id = NULL,
   time.int = 24,
   units = "hours",
-  return_both = FALSE
+  return.both = FALSE
 )
 }
 \arguments{
-\item{tag.id}{vector with the ID codes of tagged individuals.}
+\item{tag.id}{A vector containing the ID codes of tagged individuals or
+transmitters.}
 
-\item{time.stamp}{vector with the date and time of each detection in
-\code{POSIXt} format.}
+\item{time.stamp}{A vector of detection time stamps in \code{POSIXt} format.}
 
-\item{rec.id}{vector with the ID codes of the receivers for each detection.
-Optional argument, if provided, the fuction will also identify the false
-detections within each receiver.}
+\item{rec.id}{(Optional) A vector containing the receiver IDs for each
+detection. If provided, false detections will be identified within each
+receiver separately.}
 
-\item{time.int}{time interval (in hours) that define false detections. It is
-set to 24h by default, as it is the most commonly used value.}
+\item{time.int}{A numeric value specifying the time interval used to define
+false detections.}
 
-\item{return_both}{A logical value indicating whether to return both the
-detection results for the whole array and individual receivers (if
-\code{rec.id} is provided). If \code{TRUE}, the function returns both
-results. If \code{FALSE} (default), it returns only the results for the
-entire array or for individual receivers.}
+\item{units}{A character string specifying the time units for \code{time.int.}
+Defaults to \code{"hours"}.}
+
+\item{return.both}{Logical. If \code{TRUE}, the function returns a data frame
+containing false detection indicators for both the entire receiver
+array and individual receivers (if \code{rec.id} is provided). If
+\code{FALSE} (default), only a single logical vector is returned.}
 }
 \value{
-The function returns a data.frame with one or two logical vectors
-indicating if each detection has been identified as good (\code{TRUE}) or
-false (\code{FALSE}), taking into account the whole detection
-\code{array} (first column) or each \code{receiver} separately (optional
-second column, only if \code{receiver} is provided).
+A logical vector or data frame indicating whether each detection is
+valid (\code{TRUE}) or false (\code{FALSE}).
+- If \code{rec.id} is not provided, the function returns a single logical
+vector corresponding to the entire receiver array.
+- If \code{rec.id} is provided and \code{return_both = FALSE}, the function returns
+only the logical vector for individual receivers.
+- If \code{rec.id} is provided and \code{return_both = TRUE}, the function returns
+a data frame with two logical vectors: one for the entire array and one
+for individual receivers.
 }
 \description{
-False detections are defined as single detections within a predefined time
-interval (usually 24h). They can be identified among all the detections of
-the whole acoustic array or individually (providing the \code{receiver}
-argument), in which case the the detections of each single acoustic receiver
-are considered independently.
+This function identifies valid and false detections in acoustic telemetry
+data based on a predefined time interval (default: 24 hours). A false
+detection is defined as an isolated detection occurring within the specified
+time interval. The function can analyze detections across all receivers or
+separately for each receiver deployment (if the \code{rec.id} argument is
+provided).
 }
 \examples{
-
-# Create a random dataset
+# Generate a random dataset
 set.seed(900)
 time_stamp <- Sys.time() + c(1:24, 70:71, 200, 300:320, 500, 701:720) * 3600
-tag_id <- factor(sample(c("i1", "i2"), length(time.stamp), replace = TRUE))
-rec_id <- factor(sample(c("r1", "r2"), length(time.stamp), replace = TRUE))
+tag_id <- factor(sample(c("i1", "i2"), length(time_stamp), replace = TRUE))
+rec_id <- factor(sample(c("r1", "r2"), length(time_stamp), replace = TRUE))
 
-# False detections for the whole receiver array
+# Identify false detections for the entire receiver array
 f1 <- detectFilter(tag_id, time_stamp)
-plot(time_stamp, tag_id, pch = (1:2)[rec.id])
+plot(time_stamp, tag_id, pch = (1:2)[rec_id])
 points(time_stamp[!f1], tag_id[!f1], col = 2, cex = 2)
 
-# False detections within individual receivers
-f2 <- detectFilter(tag.id, time.stamp, rec.id, return_both = TRUE)
-plot(time_stamp, tag_id, pch = (1:2)[rec.id])
+# Identify false detections within individual receivers
+f2 <- detectFilter(tag_id, time_stamp, rec_id, time.int = 1, units = "days",
+                   return.both = TRUE)
+plot(time_stamp, tag_id, pch = (1:2)[rec_id])
 points(time_stamp[!f2$receiver], tag_id[!f2$receiver], col = 4, cex = 2.4)
 points(time_stamp[!f2$array], tag_id[!f2$array], col = 2, cex = 2)
 
