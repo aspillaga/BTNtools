@@ -26,7 +26,7 @@ receiver separately.}
 \item{time.int}{A numeric value specifying the time interval used to define
 false detections.}
 
-\item{units}{A character string specifying the time units for \code{time.int.}
+\item{units}{A character string specifying the time units for \code{time.int}.
 Defaults to \code{"hours"}.}
 
 \item{return.both}{Logical. If \code{TRUE}, the function returns a data frame
