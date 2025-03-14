@@ -15,7 +15,7 @@
 #'    receiver separately.
 #' @param time.int A numeric value specifying the time interval used to define
 #'    false detections.
-#' @param units A character string specifying the time units for `time.int.`
+#' @param units A character string specifying the time units for `time.int`.
 #'    Defaults to `"hours"`.
 #' @param return.both Logical. If `TRUE`, the function returns a data frame
 #'    containing false detection indicators for both the entire receiver
@@ -105,7 +105,7 @@ detectFilter <- function(tag.id, time.stamp, rec.id = NULL, time.int = 24,
 }
 
 
-# UTILITY FUNCTIONS ############################################################
+# HELPER FUNCTIONS #############################################################
 
 #' Identify Valid Detections in a Subset of Data
 #'

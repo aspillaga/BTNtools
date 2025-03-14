@@ -14,9 +14,26 @@ visualizing detection data from acoustic telemetry studies.
                Useful to identify the receiver with the largest number of 
                detections within a time interval.
 
+### Trajectory analysis:
+- **timeChunks**: Divides time stamps into chunks based on gaps exceeding a 
+                  specified threshold.
+- **chunkSeq**: Generates regular time sequences for time chunks.
+- **trackFilt**: Filters movement trajectories by removing unrealistic locations 
+                 based on speed thresholds and trajectory spikes. 
+- **stepLength**: Calculates step lengths (distance in meters) between 
+                  consecutive positions in a movement trajectory.
+- **speedCalc**: Calculates the speed (m/s) between consecutive positions in a 
+                 movement trajectory.
+- **bearing**: Calculates the bearing (movement direction) between consecutive 
+               positions in a movement trajectory.
+- **turnAng**: Calculates the turning angle (change in movement direction) 
+               between consecutive steps in a trajectory.
+
+
 ### Activity estimation:
 - **milliSec**: Extracts the millisecond component from POSIXct timestamps.
-- **soundSpeed**: Calculates the speed of sound in water using the Mackenzie equation.
+- **soundSpeed**: Calculates the speed of sound in water using the Mackenzie 
+                  equation.
 - **unwrapDrift**: Unwraps time drift in detection data.
 
 ### Plot functions:
@@ -38,5 +55,6 @@ devtools::install_github("aspillaga/BTNtools")
 ```
 
 ## Contact
-For further inquiries or feedback, feel free to contact me at aspillaga@imedea.uib-csic.es
+For further inquiries or feedback, feel free to contact me at 
+aspillaga@imedea.uib-csic.es
 
