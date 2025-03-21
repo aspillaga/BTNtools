@@ -31,6 +31,7 @@ axisLonLat <- function(map.crs, xlim = NULL, ylim = NULL, by = 0.5, side = NULL,
   requireNamespace("sp", quietly = TRUE)
 
   # Map projection
+  if (class(map.crs) == "crs") map.crs <- as(map.crs, "CRS")
   if (class(map.crs) != "CRS") map.crs <- sp::CRS(map.crs)
 
   # Projection for axis
