@@ -1,123 +1,87 @@
-#' Add Latitude and Longitude Axes to a UTM Map
+#' Add Latitude and Longitude Axes to a Projected Map
 #'
-#' This function adds axes to a map, displaying coordinates in latitude and
-#' longitude format (degrees and minutes), for a map projected in UTM.
+#' Adds latitude and longitude axes (in degrees and optionally minutes) to an
+#' existing map plotted using a projected coordinate system (e.g., UTM).
 #'
-#' @param map.crs A character string specifying the Proj4 code or an object of
-#'    class `CRS` of the plotted  map projection .
-#' @param xlim A numeric vector of length 2 specifying the limits of the X-axis.
-#'    If `NULL` (the default), the function uses the current plot limits.
-#' @param ylim A numeric vector of length 2 specifying the limits of the Y-axis.
-#'    If `NULL` (the default), the function uses the current plot limits.
-#' @param by A numeric value specifying the interval for the axis labels, in
-#'    degrees.
-#' @param side An integer (1, 2, 3, or 4) indicating which side of the plot the
-#'    axis should be drawn on. If `NULL` (the default), the function will draw
-#'    axes on both the X and Y sides of the plot.
-#' @param line A numeric value specifying the line position of the axis labels.
-#'    Default is 0, which places the labels at the default position. Positive
-#'    values move the labels outward, and negative values move them inward.
-#' @param tcl A numeric value specifying the tick length.
+#' @param side Integer vector indicating the sides of the plot where the axes
+#'   should be drawn. Possible values are 1 (bottom), 2 (left), 3 (top), and
+#'   4 (right). Default is `c(1, 2)` (bottom and left).
+#' @param map.crs A `crs` object or any valid input to `sf::st_crs()` defining
+#'   the coordinate reference system of the current plot.
+#' @param by Numeric. Interval for longitude and latitude labels, in minutes.
+#'   If `lat` and `lon` are not provided, `by` is used to generate them.
+#' @param lat Optional numeric vector of latitudes (in degrees) at which to draw
+#'   horizontal axis labels.
+#' @param lon Optional numeric vector of longitudes (in degrees) at which to
+#'   draw vertical axis labels.
+#' @param minutes Logical. If `TRUE` (default), axis labels show degrees and
+#'   minutes. If `FALSE`, only decimal degrees are shown.
+#' @param ... Additional arguments passed to the `axis()` function (e.g. `line`,
+#'   `tcl`, `lwd`, etc.).
 #'
-#' @return This function adds latitude and longitude axis labels to the
-#' current plot. It does not return any value.
+#' @details This function reads the current plot extent using `par("usr")`,
+#'   transforms it to geographic coordinates (longitude/latitude, WGS84),
+#'   and generates a graticule using `sf::st_graticule()`.
+#'
+#' @return No value is returned. The function adds axes to the current plot.
 #'
 #' @export
 #'
 #'
-axisLonLat <- function(map.crs, xlim = NULL, ylim = NULL, by = 0.5, side = NULL,
-                       line = 0, tcl = -0.5) {
+axisLonLat <- function(side = c(1, 2), map.crs, by = NULL, lat = NULL,
+                       lon = NULL, minutes = TRUE, ...) {
 
-  requireNamespace("sp", quietly = TRUE)
+  requireNamespace("sf", quietly = TRUE)
 
   # Map projection
-  if (class(map.crs) == "crs") map.crs <- as(map.crs, "CRS")
-  if (class(map.crs) != "CRS") map.crs <- sp::CRS(map.crs)
+  if (class(map.crs) != "crs") map.crs <- sf::st_crs(map.crs)
 
-  # Projection for axis
-  proj_grid <- sp::CRS("+proj=longlat +datum=WGS84")
+  ext_plot <- par("usr")
+  names(ext_plot) <- c("xmin", "xmax", "ymin", "ymax")
+  ext_plot <- sf::st_bbox(ext_plot, crs = map.crs)
 
-  # X and Y axis limits (if not provided)
-  if (is.null(xlim) | is.null(ylim)) {
-    xlim <- par("usr")[1:2]
-    ylim <- par("usr")[3:4]
+  ext_t <- sf::st_transform(ext_plot, crs = st_crs("+proj=longlat +datum=WGS84"))
+
+  if (is.null(lat) & is.null(lon) & !is.null(by)) {
+    lon <- seq(floor(ext_t[1]), ceiling(ext_t[3]), by = by/60)
+    lat <- seq(floor(ext_t[2]), ceiling(ext_t[4]), by = by/60)
   }
 
-  # Project X and Y limits to the axis projection
-  lim_coord <- sp::SpatialPoints(cbind(x=xlim, y = ylim), proj4string = map.crs)
-  lim_proj <- sp::spTransform(lim_coord, proj_grid)
+  g <- sf::st_graticule(st_bbox(ext_plot), crs = map.crs, lat = lat, lon = lon)
 
-  grid_coord <- sp::coordinates(lim_proj)
-  grid_min <- (grid_coord - floor(grid_coord)) * 60 # Minuts
-  grid_min[1, ] <- floor(grid_min[1, ])
-  grid_min[2, ] <- ceiling(grid_min[2, ])
-
-  grid_gm <- grid_min + floor(grid_coord) * 60
-
-  # Sequence of labels
-  seq_x <- seq(grid_gm[1, 1], grid_gm[2, 1], by = by)
-  seq_x <- pretty(seq_x/60, 8)
-  seq_y <- seq(grid_gm[1, 2], grid_gm[2, 2], by = by)
-  seq_y <- pretty(seq_y / 60, 5)
-
-  # Project label position
-  grid_proj <- sp::gridlines(lim_proj, easts = seq_x, norths = seq_y,
-                             ndiscr = 50)
-  at_proj <- sp::gridat(lim_proj, easts = seq_x, norths = seq_y, offset = 0.3)
-
-  grid_map <- sp::spTransform(grid_proj, map.crs)
-  at_map <- sp::spTransform(at_proj, map.crs)
-  at_coord <- sp::coordinates(at_map)
-
-  indx <- which(at_map$pos == 1)
-
-  # Generate labels
-  labels_x <- sp::coordinates(at_proj)[indx, 1]
-  deg_x <- floor(labels_x)
-  min_x <- round((labels_x - deg_x) * 60, 1)
-  labels_x <- paste0(deg_x, " *degree",
-                    ifelse(min_x > 0, paste0(" *", min_x, " *minute"), ""),
-                    " *E")
-
-  labels_y <- sp::coordinates(at_proj)[-indx, 2]
-  deg_y <- floor(labels_y)
-  min_y <- round((labels_y - deg_y) * 60, 1)
-  labels_y <- paste0(deg_y, " *degree",
-                    ifelse(min_y > 0, paste0("* ", min_y, " *minute"), ""),
-                    " *N")
-
-  # Plot axes
-  at_map$labels <- c(labels_x, labels_y)
-
-  if (is.null(side)) {
-    axis(1, at = at_coord[indx, 1], lwd = 0, lwd.ticks = 0.5,
-         labels = rep("", length(at_coord[indx, 1])), line = 0,
-         tcl = tcl)
-    axis(1, at = at_coord[indx, 1], lwd = 0, line = line,
-         labels = parse(text = as.character(at_map$labels))[indx])
-
-    axis(2, at = at_coord[-indx, 2], lwd = 0, lwd.ticks = 0.5,
-         labels = rep("", length(at_coord[-indx, 2])), line = 0,
-         tcl = tcl)
-    axis(2, at = at_coord[-indx, 2], lwd = 0, line = line,
-         labels = parse(text = as.character(at_map$labels))[-indx])
-
+  if (minutes) {
+    deg <- floor(abs(g$degree))
+    min <- round((abs(g$degree) - deg) * 60, 2)
   } else {
-
-    if (side %in% c(1, 3)) {
-      axis(side, at = at_coord[indx, 1], lwd = 0, lwd.ticks = 0.5,
-           labels = rep("", length(at_coord[indx, 1])),
-           line = 0, tcl = tcl)
-      axis(side, at = at_coord[indx, 1], lwd = 0, line = line,
-           labels = parse(text = as.character(at_map$labels))[indx])
-
-    } else {
-
-      axis(side, at = at_coord[-indx, 2], lwd = 0, lwd.ticks = 0.5,
-           labels = rep("", length(at_coord[-indx, 2])),
-           line = 0, tcl = tcl)
-      axis(side, at = at_coord[-indx, 2], lwd = 0, line = line,
-           labels = parse(text = as.character(at_map$labels))[-indx])
-    }
+    deg <- round(abs(g$degree), 5)
+    min <- rep(0, length(g$degree))
   }
+
+  type <- g$type
+  type[type == "E" & g$degree < 0] <- "W"
+  type[type == "N" & g$degree < 0] <- "S"
+  g$degree_label <- paste0(deg, "*degree",
+                           ifelse(min != 0, paste0("*", min, "*minute"), ""),
+                           "*", type)
+
+  if (1 %in% side ) {
+    axis(1, at = g$x_start[g$type == "E"],
+         labels = parse(text = g$degree_label[g$type == "E"]), ...)
+  }
+
+  if (3 %in% side) {
+    axis(3, at = g$x_end[g$type == "E"],
+         labels = parse(text = g$degree_label[g$type == "E"]), ...)
+  }
+
+  if (2 %in% side) {
+    axis(2, at = g$y_start[g$type == "N"],
+         labels = parse(text = g$degree_label[g$type == "N"]), ...)
+  }
+
+  if (4 %in% side) {
+    axis(4, at = g$y_end[g$type == "N"],
+         labels = parse(text = g$degree_label[g$type == "N"]), ...)
+  }
+
 }

@@ -2,46 +2,50 @@
 % Please edit documentation in R/axisLonLat.R
 \name{axisLonLat}
 \alias{axisLonLat}
-\title{Add Latitude and Longitude Axes to a UTM Map}
+\title{Add Latitude and Longitude Axes to a Projected Map}
 \usage{
 axisLonLat(
+  side = c(1, 2),
   map.crs,
-  xlim = NULL,
-  ylim = NULL,
-  by = 0.5,
-  side = NULL,
-  line = 0,
-  tcl = -0.5
+  by = NULL,
+  lat = NULL,
+  lon = NULL,
+  minutes = TRUE,
+  ...
 )
 }
 \arguments{
-\item{map.crs}{A character string specifying the Proj4 code or an object of
-class \code{CRS} of the plotted  map projection .}
+\item{side}{Integer vector indicating the sides of the plot where the axes
+should be drawn. Possible values are 1 (bottom), 2 (left), 3 (top), and
+4 (right). Default is \code{c(1, 2)} (bottom and left).}
 
-\item{xlim}{A numeric vector of length 2 specifying the limits of the X-axis.
-If \code{NULL} (the default), the function uses the current plot limits.}
+\item{map.crs}{A \code{crs} object or any valid input to \code{sf::st_crs()} defining
+the coordinate reference system of the current plot.}
 
-\item{ylim}{A numeric vector of length 2 specifying the limits of the Y-axis.
-If \code{NULL} (the default), the function uses the current plot limits.}
+\item{by}{Numeric. Interval for longitude and latitude labels, in minutes.
+If \code{lat} and \code{lon} are not provided, \code{by} is used to generate them.}
 
-\item{by}{A numeric value specifying the interval for the axis labels, in
-degrees.}
+\item{lat}{Optional numeric vector of latitudes (in degrees) at which to draw
+horizontal axis labels.}
 
-\item{side}{An integer (1, 2, 3, or 4) indicating which side of the plot the
-axis should be drawn on. If \code{NULL} (the default), the function will draw
-axes on both the X and Y sides of the plot.}
+\item{lon}{Optional numeric vector of longitudes (in degrees) at which to
+draw vertical axis labels.}
 
-\item{line}{A numeric value specifying the line position of the axis labels.
-Default is 0, which places the labels at the default position. Positive
-values move the labels outward, and negative values move them inward.}
+\item{minutes}{Logical. If \code{TRUE} (default), axis labels show degrees and
+minutes. If \code{FALSE}, only decimal degrees are shown.}
 
-\item{tcl}{A numeric value specifying the tick length.}
+\item{...}{Additional arguments passed to the \code{axis()} function (e.g. \code{line},
+\code{tcl}, \code{lwd}, etc.).}
 }
 \value{
-This function adds latitude and longitude axis labels to the
-current plot. It does not return any value.
+No value is returned. The function adds axes to the current plot.
 }
 \description{
-This function adds axes to a map, displaying coordinates in latitude and
-longitude format (degrees and minutes), for a map projected in UTM.
+Adds latitude and longitude axes (in degrees and optionally minutes) to an
+existing map plotted using a projected coordinate system (e.g., UTM).
+}
+\details{
+This function reads the current plot extent using \code{par("usr")},
+transforms it to geographic coordinates (longitude/latitude, WGS84),
+and generates a graticule using \code{sf::st_graticule()}.
 }

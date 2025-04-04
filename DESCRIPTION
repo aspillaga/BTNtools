@@ -13,4 +13,4 @@ BugReports: https://github.com/aspillaga/BTNtools/issues
 Imports:
     lubridate,
     data.table,
-    sp
+    sf
