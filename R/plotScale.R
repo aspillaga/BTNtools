@@ -37,7 +37,7 @@ plotScale <- function(length = 100, units = "m", col = "gray50", side = "left",
 
   l <- ifelse(units == "km", length * 1000, length)
 
-  if (side == "right") {
+  if (side == "left") {
     pos_x <- usr[1] + inset[1] * diff(usr[1:2]) / diff(fig[1:2])
   } else {
     pos_x <- usr[2] - inset[1] * diff(usr[1:2]) / diff(fig[1:2]) - l
